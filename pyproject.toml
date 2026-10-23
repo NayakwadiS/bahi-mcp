@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bahi-mcp"
-version = "0.1.0"
-description = "MCP server for Indian mutual fund data and investor analytics (NAV, SIP returns, XIRR, CAGR)."
+version = "0.2.0"
+description = "MCP server for Indian investors: mutual fund data and analytics, NSE/BSE market data, and financial calculators."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
@@ -20,6 +20,10 @@ keywords = [
     "nav",
     "sip",
     "xirr",
+    "nse",
+    "bse",
+    "stocks",
+    "calculator",
     "finance",
     "llm",
 ]
@@ -36,10 +40,13 @@ classifiers = [
 ]
 dependencies = [
     "mcp>=1.2.0",
-    "mftool>=3.0",
+    "mftool>=3.4",
 ]
 
 [project.optional-dependencies]
+stocks = [
+    "yfinance>=0.2.40",
+]
 dev = [
     "pytest>=8",
     "build",
