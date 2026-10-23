@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bahi-mcp"
+version = "0.1.0"
+description = "MCP server for Indian mutual fund data and investor analytics (NAV, SIP returns, XIRR, CAGR)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Sujit" }]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "india",
+    "mutual-funds",
+    "amfi",
+    "nav",
+    "sip",
+    "xirr",
+    "finance",
+    "llm",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Office/Business :: Financial :: Investment",
+]
+dependencies = [
+    "mcp>=1.2.0",
+    "mftool>=3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "build",
+    "twine",
+]
+
+[project.scripts]
+bahi-mcp = "bahi_mcp.server:main"
+
+[project.urls]
+Homepage = "https://github.com/NayakwadiS/bahi-mcp"
+Repository = "https://github.com/NayakwadiS/bahi-mcp"
+Issues = "https://github.com/NayakwadiS/bahi-mcp/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bahi_mcp"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/bahi_mcp", "tests", "README.md", "LICENSE", "CHANGELOG.md", "PUBLISHING.md"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
