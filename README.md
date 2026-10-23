@@ -116,7 +116,7 @@ Drop `"--with", "yfinance"` if you don't need stock data. Restart Claude Desktop
 ## Development
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/bahi-mcp
+git clone https://github.com/NayakwadiS/bahi-mcp
 cd bahi-mcp
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
