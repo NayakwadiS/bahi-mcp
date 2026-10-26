@@ -56,7 +56,7 @@ MCP server that gives AI assistants (Claude, Cursor, VS Code and others) access 
 | `project_sip` | SIP projection at an assumed return, with optional yearly step-up |
 | `calculate_swp` | Does a corpus last under a monthly withdrawal? |
 | `plan_retirement` | Corpus needed and the monthly SIP to build it |
-| `estimate_mf_tax` | Capital gains tax estimate on a fund redemption (FY 2026-27 rules) |
+| `estimate_mf_tax` | Capital gains tax estimate on a fund redemption; use purchase/sale dates for exact 12-month classification |
 
 Dates can be `DD-MM-YYYY` or `YYYY-MM-DD`.
 
@@ -99,18 +99,22 @@ Drop `"--with", "yfinance"` if you don't need stock data. Restart Claude Desktop
 
 ```json
 {
-  "bahi-mcp": {
-    "command": "uvx",
-    "args": ["--with", "yfinance", "bahi-mcp"]
+  "mcpServers": {
+    "bahi-mcp": {
+      "command": "uvx",
+      "args": ["--with", "yfinance", "bahi-mcp"]
+    }
   }
 }
 ```
+
+For Cursor, save this in `~/.cursor/mcp.json`. Remove `"--with", "yfinance"` if you don't need stock data.
 
 ## Notes on data and accuracy
 
 - **Mutual fund data** comes from AMFI through `mftool` (3.4 or newer). NAVs are published after market close, usually by about 9 PM IST. mftool caches NAVs for 24 hours, so use `clear_cache` after the evening update to see the latest.
 - **Stock data** comes from Yahoo Finance through `yfinance`. It is unofficial, can be delayed, rate-limited or change without notice. Don't use it for trading decisions.
-- **Tax estimates** follow FY 2026-27 rules for equity funds (STCG 20%, LTCG 12.5% above ₹1.25 lakh, long-term after 12 months; debt funds at slab rate). Surcharge, loss set-off and older indexation rules are not modelled.
+- **Tax estimates** follow the configured FY 2026-27 assumptions for equity funds (STCG 20%, LTCG 12.5% above the remaining ₹1.25 lakh annual exemption); provide purchase and sale dates for exact calendar 12-month classification, or holding days for an approximate 365-day cutoff. The exemption is shared across eligible gains in a financial year. Debt funds are modelled at slab rate only for units bought on/after 1 April 2023. Surcharge, loss set-off and older indexation rules are not modelled; verify current law and consult a tax professional.
 - **Projections** (`project_sip`, `calculate_swp`, `plan_retirement`) assume constant returns. Real markets don't behave that way.
 
 ## Development

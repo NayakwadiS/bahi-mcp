@@ -341,16 +341,19 @@ def plan_retirement(
 def estimate_mf_tax(
     purchase_amount: float,
     sale_amount: float,
-    holding_days: int,
+    holding_days: int | None = None,
     fund_type: str = "equity",
     slab_rate_pct: float = 30.0,
     ltcg_exemption_available: float = calculators.EQUITY_LTCG_EXEMPTION,
+    purchase_date: str | None = None,
+    sale_date: str | None = None,
 ) -> dict[str, Any]:
     """Estimate capital gains tax on a mutual fund redemption (FY 2026-27 rules).
 
-    fund_type 'equity': STCG 20% (up to 12 months) or LTCG 12.5% above the
-    exemption. 'debt'/'other': taxed at `slab_rate_pct`. Excludes surcharge and
-    loss set-off. Confirm with a tax professional.
+    Supply holding_days, or both purchase_date and sale_date for exact calendar
+    holding-period classification. Equity STCG is 20%; LTCG is 12.5% above the
+    remaining annual exemption. 'debt'/'other': taxed at `slab_rate_pct`.
+    Excludes surcharge and loss set-off. Confirm with a tax professional.
     """
     return _with_disclaimer(
         calculators.mf_capital_gains(
@@ -360,6 +363,8 @@ def estimate_mf_tax(
             fund_type,
             slab_rate_pct,
             ltcg_exemption_available,
+            purchase_date=purchase_date,
+            sale_date=sale_date,
         )
     )
 

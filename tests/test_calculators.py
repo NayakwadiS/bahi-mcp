@@ -87,6 +87,28 @@ def test_capital_gains_boundary_is_short_term_at_365_days():
     assert c.mf_capital_gains(500000, 600000, 366)["category"] == "LTCG"
 
 
+def test_capital_gains_calendar_dates_classify_exact_twelve_month_boundary():
+    assert c.mf_capital_gains(
+        500000, 600000, purchase_date="2024-02-29", sale_date="2025-02-28"
+    )["category"] == "STCG"
+    assert c.mf_capital_gains(
+        500000, 600000, purchase_date="2024-02-29", sale_date="2025-03-01"
+    )["category"] == "LTCG"
+
+
+def test_capital_gains_requires_one_holding_period_input():
+    with pytest.raises(ValueError):
+        c.mf_capital_gains(500000, 600000)
+    with pytest.raises(ValueError):
+        c.mf_capital_gains(
+            500000, 600000, 400, purchase_date="2024-01-01", sale_date="2025-02-01"
+        )
+    with pytest.raises(ValueError):
+        c.mf_capital_gains(
+            500000, 600000, purchase_date="2024-01-01"
+        )
+
+
 def test_capital_gains_loss_and_debt_slab():
     assert c.mf_capital_gains(500000, 400000, 100)["total_tax"] == 0.0
     debt = c.mf_capital_gains(500000, 600000, 500, fund_type="debt", slab_rate_pct=30)

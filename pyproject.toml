@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bahi-mcp"
-version = "0.2.0"
+version = "0.3.0"
 description = "MCP server for Indian investors: mutual fund data and analytics, NSE/BSE market data, and financial calculators."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -39,7 +39,7 @@ classifiers = [
     "Topic :: Office/Business :: Financial :: Investment",
 ]
 dependencies = [
-    "mcp>=1.2.0",
+    "mcp>=1.2.0,<2",
     "mftool>=3.4",
 ]
 

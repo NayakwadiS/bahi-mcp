@@ -6,7 +6,10 @@ planning and are not investment or tax advice.
 
 from __future__ import annotations
 
+from datetime import date
 from typing import Any
+
+from .analytics import add_months, parse_date
 
 # Tax rules for listed equity / equity-oriented mutual funds, FY 2026-27.
 # Verify against the latest Income Tax Act provisions before relying on them.
@@ -225,24 +228,46 @@ def retirement_corpus(
 def mf_capital_gains(
     purchase_amount: float,
     sale_amount: float,
-    holding_days: int,
+    holding_days: int | None = None,
     fund_type: str = "equity",
     slab_rate_pct: float = 30.0,
     ltcg_exemption_available: float = EQUITY_LTCG_EXEMPTION,
     apply_cess: bool = True,
+    purchase_date: str | date | None = None,
+    sale_date: str | date | None = None,
 ) -> dict[str, Any]:
     """Estimate tax on a mutual fund redemption.
 
-    equity: STCG 20% (held up to 12 months) or LTCG 12.5% above the exemption.
+    Equity holding period can be supplied as purchase/sale dates for an exact
+    calendar-month comparison, or as holding_days for a 365-day approximation.
+    STCG is 20%; LTCG is 12.5% above the remaining annual exemption.
     debt / other: taxed at your income-tax slab rate (units bought on/after
     1 Apr 2023). Surcharge, indexation for old units and set-off of losses are
-    not modelled. Always confirm with a tax professional.
+    not modelled. The exemption is shared across eligible gains in a financial
+    year; supply its remaining balance. Always confirm with a tax professional.
     """
     cost = _positive("purchase_amount", purchase_amount)
     proceeds = _non_negative("sale_amount", sale_amount)
-    days = int(holding_days)
-    if days < 0:
-        raise ValueError("holding_days must not be negative.")
+    if purchase_date is None:
+        if sale_date is not None:
+            raise ValueError("Provide both purchase_date and sale_date.")
+        if holding_days is None:
+            raise ValueError("Provide holding_days or both purchase_date and sale_date.")
+        days = int(holding_days)
+        if days < 0:
+            raise ValueError("holding_days must not be negative.")
+        is_long_term = days > EQUITY_LONG_TERM_DAYS
+    else:
+        if sale_date is None:
+            raise ValueError("Provide both purchase_date and sale_date.")
+        if holding_days is not None:
+            raise ValueError("Provide holding_days or purchase/sale dates, not both.")
+        bought = parse_date(purchase_date)
+        sold = parse_date(sale_date)
+        if sold < bought:
+            raise ValueError("sale_date must be on or after purchase_date.")
+        is_long_term = sold > add_months(bought, 12)
+        days = (sold - bought).days
     kind = fund_type.strip().lower()
     if kind not in {"equity", "debt", "other"}:
         raise ValueError("fund_type must be 'equity', 'debt' or 'other'.")
@@ -257,6 +282,7 @@ def mf_capital_gains(
     if gain <= 0:
         result.update(
             category="loss",
+            holding_days=days,
             taxable_gain=0.0,
             tax_before_cess=0.0,
             cess=0.0,
@@ -267,7 +293,7 @@ def mf_capital_gains(
         return result
 
     if kind == "equity":
-        if days > EQUITY_LONG_TERM_DAYS:
+        if is_long_term:
             category, rate = "LTCG", EQUITY_LTCG_RATE_PCT
             taxable = max(0.0, gain - exemption)
         else:
@@ -282,6 +308,7 @@ def mf_capital_gains(
     total = tax + cess
     result.update(
         category=category,
+        holding_days=days,
         tax_rate_pct=rate,
         taxable_gain=_r2(taxable),
         tax_before_cess=_r2(tax),
