@@ -1,3 +1,4 @@
+<!-- mcp-name: io.github.NayakwadiS/bahi-mcp -->
 # bahi-mcp
 
 MCP server that gives AI assistants (Claude, Cursor, VS Code and others) access to **Indian mutual fund data**, **NSE/BSE market data** and **financial calculators**.
