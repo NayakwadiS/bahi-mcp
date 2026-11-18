@@ -7,6 +7,12 @@ MCP server that gives AI assistants (Claude, Cursor, VS Code and others) access 
 
 > **Disclaimer:** bahi-mcp provides information and calculations from public data sources (AMFI via the [`mftool`](https://pypi.org/project/mftool/) library, and Yahoo Finance for stocks) and from assumptions you supply. It is **not investment or tax advice** and the author is not a SEBI-registered adviser. Data may be delayed or inaccurate, and tax rules change. Verify before making decisions.
 
+[![PyPI](https://img.shields.io/badge/pypi-v0.4.0-orange)](https://pypi.org/project/mftool-mcp/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![MCP](https://img.shields.io/badge/MCP-compatible-green.svg)](https://modelcontextprotocol.io)
+[![Downloads](https://pepy.tech/badge/bahi-mcp/month)](https://pepy.tech/project/bahi-mcp)
+
 ## What you can ask
 
 - "Compare these three flexi-cap funds on 3-year return, volatility and max drawdown."
